@@ -7,7 +7,7 @@ mongoose
   //     useUnifiedTopology: true,
   //   })
   .connect(
-    "mongodb+srv://goldentalos:sigmababyuwu@cluster0.pb9a6bd.mongodb.net/",
+    "mongodb+srv://goldentalos:sigmababiesuwu@cluster0.pb9a6bd.mongodb.net/",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

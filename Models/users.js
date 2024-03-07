@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const slugify = require("slugify");
+const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   username: {
     type: String,
     unique: true,

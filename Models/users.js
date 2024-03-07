@@ -18,11 +18,11 @@ const userSchema = new mongoose.Schema({
     type: Array,
     trim: true,
   },
-  // name: {
-  //   type: String,
-  //   trim: true,
-  //   required: "Please Enter a Name",
-  // },
+  name: {
+    type: String,
+    trim: true,
+    required: "Please Enter a Name",
+  },
   tokens: [
     {
       token: {
@@ -41,7 +41,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-UserSchema.methods.comparePassword = function (passw, cb) {
+userSchema.methods.comparePassword = function (passw, cb) {
   bcrypt.compare(passw, this.password, function (err, isMatch) {
     if (err) {
       return cb(err);

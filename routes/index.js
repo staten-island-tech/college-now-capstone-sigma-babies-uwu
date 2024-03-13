@@ -14,6 +14,6 @@ router.get("/user/get", userControllers.getUser);
 router.patch("/user/update/:id", userControllers.updateUser);
 router.delete("/user/delete/:id", userControllers.deleteUser);
 
-router.post("/register", authController.register);
+router.post("/user/register", authController.register);
 
 module.exports = router;

@@ -21,5 +21,6 @@ router.get(
   authController.authCheck,
   authController.protected
 );
+router.post("/note/uploadTest", noteController.upload, noteController.homePage);
 
 module.exports = router;

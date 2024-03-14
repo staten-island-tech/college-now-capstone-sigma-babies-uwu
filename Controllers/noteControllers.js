@@ -23,6 +23,15 @@ const multerOptions = {
 };
 
 exports.upload = multer(multerOptions).single("photo");
+exports.homePage = (req, res) => {
+  const Note = ["a", "ah", "ahh"];
+  try {
+    console.log(req.name);
+    res.json([Note, req.name]);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 exports.createNote = async (req, res) => {
   try {

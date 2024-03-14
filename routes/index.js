@@ -1,19 +1,25 @@
 const express = require("express");
 const router = new express.Router();
-const noteControllers = require("../Controllers/noteControllers");
-const userControllers = require("../Controllers/userControllers");
+const noteController = require("../Controllers/noteControllers");
+const userController = require("../Controllers/userControllers");
 const authController = require("../Controllers/authControllers");
 
-router.get("/note/get", noteControllers.getNote);
-router.post("/note/add", noteControllers.createNote);
-router.patch("/note/update/:id", noteControllers.updateNote);
-router.delete("/note/delete/:id", noteControllers.deleteNote);
+router.get("/note/get", noteController.getNote);
+router.post("/note/add", noteController.createNote);
+router.patch("/note/update/:id", noteController.updateNote);
+router.delete("/note/delete/:id", noteController.deleteNote);
 
-router.get("/user/get", userControllers.getUser);
+router.get("/user/get", userController.getUser);
 // router.post("/user/add", userControllers.createUser);
-router.patch("/user/update/:id", userControllers.updateUser);
-router.delete("/user/delete/:id", userControllers.deleteUser);
+router.patch("/user/update/:id", userController.updateUser);
+router.delete("/user/delete/:id", userController.deleteUser);
 
 router.post("/user/register", authController.register);
+router.post("/user/login", authController.login);
+router.get(
+  "/user/protected",
+  authController.authCheck,
+  authController.protected
+);
 
 module.exports = router;

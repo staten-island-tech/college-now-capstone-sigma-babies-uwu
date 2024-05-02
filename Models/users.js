@@ -33,6 +33,12 @@ const userSchema = new Schema({
   ],
 });
 
+userSchema.virtual("notesLLL", {
+  ref: "Note",
+  localField: "_id", //Where local data is stored
+  foreignField: "owner", //where this data exists on the other document, in this case we called it owner on the Review model
+});
+
 userSchema.pre("save", async function (next) {
   const user = this;
   if (user.isModified("password")) {

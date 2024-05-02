@@ -35,7 +35,10 @@ exports.homePage = (req, res) => {
 
 exports.createNote = async (req, res) => {
   try {
-    const note = new Note(req.body);
+    const note = new Note({
+      ...req.body,
+      owner: req.user._id,
+    });
     await note.save();
     res.json(note);
   } catch (error) {

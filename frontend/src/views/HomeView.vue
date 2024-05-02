@@ -4,7 +4,13 @@
 <template>
   <div class="con">
     <img class="logo" src="/BuffSeagull.png" alt="Buff Seagull Logo">
-    <h1 class="title">SEAGULL MAXXING</h1>
+    <div>
+      <h1 class="title">SEAGULL MAXXING</h1>
+      <div>
+        <input type="text">
+        <input type="text">
+      </div>
+    </div>
   </div>
 </template>
 <style scoped>

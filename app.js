@@ -5,7 +5,12 @@ require("./DB/mongoose");
 const routes = require("./routes/index");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-
+const cors = require("cors");
+let corsOptions = {
+  origin: "*",
+  optionsSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.post("/profile", upload.single("avatar"), function (req, res, next) {
   res.send(req.file);
 });

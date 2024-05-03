@@ -26,7 +26,7 @@ font-family: comicSans;
 font-size: 1.3vw;
 }
 .headertext1:hover{
-  color: rgb(221, 103, 103);
+  color: rgb(219, 138, 138);
 }
 .wrapper a.router-link-exact-active {
 color: rgb(219, 138, 138);

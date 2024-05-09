@@ -15,15 +15,46 @@ getNote();
 </script>
 <template>
     <NavBar/>
-    <div class="left">
-        <div v-for="note in notes" :key="note.id">
+    <div class="con">
+        <div class="leftCon">
+        <div class="left" v-for="note in notes" :key="note.id" @click="selected(data, id, title, note, owner, user)">
             <h2>{{note.note}}</h2>
         </div>
     </div>
-    <div class="noteDisplay">
-
+    <div class="right">
+        <h2>{{ title }}</h2>
+    </div>
     </div>
 </template>
+<script>
+export default {
+    data(){
+        return {
+            selected: [
+                {
+                    data: null,
+                    id: null,
+                    title: null,
+                    note: null,
+                    owner: null,
+                    user: null,
+
+                }
+            ]
+        }
+    },
+    methods:{
+        select(data, id, title, note, owner, user){
+            this.selected.data=data
+            this.selected.id=id
+            this.selected.title=title
+            this.selected.owner = owner;
+            this.selected.note=note
+            this.selected.user=user
+        }
+    }
+}
+</script>
 <style scoped>
 @font-face {
   font-family: comicSans;
@@ -46,5 +77,21 @@ h2{
     width: 20vw;
     border-radius: 3vw;
     margin: 3vw;
+}
+.right{
+    width: 50vw;
+    border-radius: 3vw;
+    background-color: rgb(255, 255, 255);
+    height: 70vh;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+.leftCon{
+    height: 90vh;
+
+}
+.con{
+    display: flex;  
+    justify-content: center;
+    margin-top: 3vw;
 }
 </style>

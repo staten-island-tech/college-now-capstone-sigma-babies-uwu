@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue'
+import Compose from '../components/Compose.vue'
 let notes = ref([])
 const selectedNote = ref({});
 async function getNote() {
@@ -19,6 +20,7 @@ function selectNote(note) {
 </script>
 <template>
     <NavBar/>
+    <Compose/>
     <div class="con">
         <div class="leftCon">
         <div class="left" v-for="note in notes" :key="note.id" @click="selectNote(note)">

@@ -1,8 +1,8 @@
 <template>
     <div id="nav">
       <div class="wrapper">
+        <RouterLink to="/" class="headertext1">GRIND</RouterLink>
         <RouterLink to="/max" class="headertext1">MAX</RouterLink>
-        <RouterLink to="/grind" class="headertext1">GRIND</RouterLink>
       </div>
     </div>
 </template>

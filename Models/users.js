@@ -15,8 +15,8 @@ const userSchema = new Schema({
     required: "Please Enter a Password",
   },
   notes: {
-    type: Array,
-    trim: true,
+    type: Schema.Types.ObjectId,
+    ref: "Note",
   },
   name: {
     type: String,

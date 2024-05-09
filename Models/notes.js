@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const Schema = mongoose.Schema;
 const noteSchema = new mongoose.Schema({
-  user: {
+  username: {
     type: String,
     trim: true,
     required: "Please Enter a User",
@@ -21,6 +22,10 @@ const noteSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: "Please provide today's date",
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
   },
 });
 

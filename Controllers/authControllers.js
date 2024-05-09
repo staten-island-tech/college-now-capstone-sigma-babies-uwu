@@ -53,6 +53,15 @@ exports.login = async (req, res) => {
     res.status(400).send("user not found");
   }
 };
+
+exports.signOut = async (req, res) => {
+  try {
+    res.send("user signed out");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.authCheck = async (req, res, next) => {
   try {
     const token = req.header("Authorization").replace("Bearer ", "");

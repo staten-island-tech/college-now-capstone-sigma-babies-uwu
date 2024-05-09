@@ -1,4 +1,5 @@
 const Note = require("../Models/notes");
+const User = require("../Models/users");
 const path = require("path");
 const multer = require("multer");
 const multerOptions = {
@@ -35,6 +36,11 @@ exports.homePage = (req, res) => {
 
 exports.createNote = async (req, res) => {
   try {
+    let username = req.body.username;
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new Error("Unable to create note: User not found");
+    }
     const note = new Note(req.body);
     await note.save();
     res.json(note);
@@ -47,6 +53,17 @@ exports.getNote = async (req, res) => {
   try {
     const notes = await Note.find();
     res.json(notes);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.getUserNote = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+    // const notes = user.notes;
+    // res.json(notes);
   } catch (error) {
     console.log(error);
   }

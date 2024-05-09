@@ -6,6 +6,7 @@ const authController = require("../Controllers/authControllers");
 
 router.get("/note/get", noteController.getNote);
 router.post("/note/add", noteController.createNote);
+router.get("/note/uget/:id", noteController.getUserNote);
 router.patch("/note/update/:id", noteController.updateNote);
 router.delete("/note/delete/:id", noteController.deleteNote);
 

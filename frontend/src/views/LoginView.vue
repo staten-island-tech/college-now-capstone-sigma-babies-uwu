@@ -80,6 +80,7 @@ async function register(username, password, name) {
   console.log(res)
   if (res.status != 400) {
     failedLogin.value = false
+    router.push({ path: '/' })
   } else {
     failedLogin.value = true
   }

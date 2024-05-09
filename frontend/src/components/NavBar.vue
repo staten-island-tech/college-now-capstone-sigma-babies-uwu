@@ -24,6 +24,7 @@ text-decoration: none;
 color: rgb(255, 182, 194);
 font-family: comicSans;
 font-size: 1.3vw;
+font-weight: bolder;
 }
 .headertext1:hover{
   color: rgb(219, 138, 138);

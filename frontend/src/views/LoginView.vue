@@ -2,12 +2,15 @@
   <div>
     <div v-if="logIn">
       <form @submit.prevent="login(username, password)">
-        <p>RESUME YOUR SIGMA GRINDSET</p>
+        <p>LOG IN TO YOUR SIGMA GRINDSET</p>
         <input type="username" placeholder="username" v-model="username" />
         <input type="password" placeholder="password" v-model="password" />
         <button type="submit">submit</button>
       </form>
       <button @click="createNew">Create a new account</button>
+      <div v-if="failedLogin">
+        <p>Failed to find your account. Please try again.</p>
+      </div>
     </div>
 
     <form @submit.prevent="register(newusername, newpassword, name)" v-else>
@@ -28,24 +31,30 @@ const newusername = ref('')
 const password = ref('')
 const newpassword = ref('')
 const name = ref('')
+const failedLogin = ref(false)
 
 function createNew() {
   logIn.value = !logIn.value
 }
 
 async function login(username, password) {
-  console.log(username, password)
-  const res = await fetch('http://localhost:3000/user/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      username: username.toLowerCase(),
-      password: password
+  try {
+    console.log(username, password)
+    const res = await fetch('http://localhost:3000/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username.toLowerCase(),
+        password: password
+      })
     })
-  })
-  console.log(res)
+    console.log(res)
+    failedLogin.value = false
+  } catch (error) {
+    failedLogin.value = true
+  }
 }
 
 async function register(username, password, name) {

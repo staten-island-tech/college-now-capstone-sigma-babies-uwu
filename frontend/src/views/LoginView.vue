@@ -3,8 +3,8 @@
     <div v-if="logIn">
       <form @submit.prevent="login(username, password)">
         <p>LOG IN TO YOUR SIGMA GRINDSET</p>
-        <input type="username" placeholder="username" v-model="username" />
-        <input type="password" placeholder="password" v-model="password" />
+        <input type="username" placeholder="username" v-model="username" required />
+        <input type="password" placeholder="password" v-model="password" required />
         <button type="submit">submit</button>
       </form>
       <button @click="createNew">Create a new account</button>
@@ -15,16 +15,21 @@
 
     <form @submit.prevent="register(newusername, newpassword, name)" v-else>
       <p>BEGIN YOUR SIGMA GRINDSET</p>
-      <input type="newusername" placeholder="username" v-model="newusername" />
-      <input type="name" placeholder="name" v-model="name" />
-      <input type="newpassword" placeholder="password" v-model="newpassword" />
+      <input type="newusername" placeholder="username" v-model="newusername" required />
+      <input type="name" placeholder="name" v-model="name" required />
+      <input type="newpassword" placeholder="password" v-model="newpassword" required />
       <button type="submit">submit</button>
+      <div v-if="failedLogin">
+        <p>Username unavailable. Please submit another.</p>
+      </div>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import router from '../router/index'
+
 const logIn = ref(true)
 const username = ref('')
 const newusername = ref('')
@@ -35,24 +40,26 @@ const failedLogin = ref(false)
 
 function createNew() {
   logIn.value = !logIn.value
+  failedLogin.value = false
 }
 
 async function login(username, password) {
-  try {
-    console.log(username, password)
-    const res = await fetch('http://localhost:3000/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username.toLowerCase(),
-        password: password
-      })
+  console.log(username, password)
+  const res = await fetch('http://localhost:3000/user/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username.toLowerCase(),
+      password: password
     })
-    console.log(res)
+  })
+  console.log(res)
+  if (res.status != 400) {
     failedLogin.value = false
-  } catch (error) {
+    router.push({ path: '/' })
+  } else {
     failedLogin.value = true
   }
 }
@@ -71,5 +78,10 @@ async function register(username, password, name) {
     })
   })
   console.log(res)
+  if (res.status != 400) {
+    failedLogin.value = false
+  } else {
+    failedLogin.value = true
+  }
 }
 </script>

@@ -46,7 +46,7 @@ p{
     height: 30vw;
     width: 25vw;
     background-color: rgb(255, 255, 255);
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
+    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
     position: absolute;
     border-radius: 2vw;
     bottom: 4vw;
@@ -58,7 +58,7 @@ p{
 }
 .note{
     border-radius: 1vw;
-    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+    box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
     border: none;
     width: 85%;
     height: 16vw;
@@ -81,7 +81,7 @@ textarea{
     font-family: comicSans;
     color: rgb(219, 138, 138);
     font-size: 1vw;
-    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+    box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
     border: none;
     background-color: rgb(255, 249, 249);
 }

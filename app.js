@@ -11,6 +11,7 @@ let corsOptions = {
   optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
+
 app.post("/profile", upload.single("avatar"), function (req, res, next) {
   res.send(req.file);
 });

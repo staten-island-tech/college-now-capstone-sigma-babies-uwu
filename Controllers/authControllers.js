@@ -11,23 +11,32 @@ const generateToken = async function (user) {
 };
 
 exports.register = async function (req, res) {
-  if (!req.body.username || !req.body.password) {
-    res.json({ success: false, msg: "Please pass username and password." });
-  } else {
-    console.log(req.body.password);
-    let newUser = new User({
-      username: req.body.username,
-      password: req.body.password,
-      name: req.body.name,
-    });
-    const token = await generateToken(newUser);
-    await newUser.save();
-    res.json({
-      success: true,
-      msg: "Successful created new user.",
-      newUser,
-      token,
-    });
+  try {
+    let username = req.body.username;
+    let password = req.body.password;
+    let name = req.body.name;
+    if (!username || !password || !name) {
+      res.json({ success: false, msg: "Please pass username and password." });
+      throw new Error("Fill out all fields.");
+    } else {
+      console.log(password);
+      let newUser = new User({
+        username: username,
+        password: password,
+        name: name,
+      });
+      const token = await generateToken(newUser);
+      await newUser.save();
+      res.json({
+        success: true,
+        msg: "Successful created new user.",
+        newUser,
+        token,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).send("user taken please");
   }
 };
 

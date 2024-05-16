@@ -58,13 +58,15 @@ p{
 }
 .note{
     border-radius: 1vw;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(219, 138, 138) 0px 0px 0px 1px inset;
+    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+    border: none;
     width: 85%;
     height: 16vw;
     font-family: comicSans;
     color: rgb(219, 138, 138);
     font-size: 1vw;
     padding: 1vw;
+    background-color: rgb(255, 249, 249);
 }
 textarea:focus, input:focus{
     outline: none;
@@ -79,7 +81,9 @@ textarea{
     font-family: comicSans;
     color: rgb(219, 138, 138);
     font-size: 1vw;
-    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(219, 138, 138) 0px 0px 0px 1px inset;
+    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+    border: none;
+    background-color: rgb(255, 249, 249);
 }
 
 </style>

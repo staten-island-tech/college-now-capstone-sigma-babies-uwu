@@ -4,16 +4,16 @@ import NavBar from '../components/NavBar.vue'
 import Compose from '../components/Compose.vue'
 let notes = ref([])
 const selectedNote = ref({})
-// async function getNote() {
-//   let res = await fetch('http://localhost:3000/note/get', {
-//     method: 'GET',
-//     headers: { 'Content-Type': 'application/json' }
-//   })
-//   let data = await res.json()
-//   notes.value = data
-//   console.log(notes.value)
-// }
-// getNote()
+async function getNote() {
+  let res = await fetch('http://localhost:3000/note/get', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  let data = await res.json()
+  notes.value = data
+  console.log(notes.value)
+}
+getNote()
 function selectNote(note) {
   selectedNote.value = note
 }
@@ -46,7 +46,7 @@ function selectNote(note) {
 }
 .close {
   position: absolute;
-  right: 15vw;
+  right: 27vw;
   border: none;
   background: transparent;
   font-size: 2vw;

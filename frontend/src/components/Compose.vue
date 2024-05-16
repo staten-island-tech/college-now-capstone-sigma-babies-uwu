@@ -55,6 +55,7 @@ async function create(title, note) {
                 <p>Note:</p>
                 <textarea class="note" type="text"  v-model="note" required > </textarea>
             </div>
+            <button class="submit" type="submit">SUBMIT</button>
         </form>
     </div>
 </template>
@@ -62,6 +63,18 @@ async function create(title, note) {
 @font-face {
   font-family: comicSans;
   src: url(comicsans.ttf);
+}
+.submit{
+  margin-top: 1vw;
+  background-color: rgb(255, 249, 249);
+  box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
+    border: none;
+    padding: .5vw;
+    font-family: comicSans;
+    font-weight: bold;
+    border-radius: .9vw;
+    font-size: .8vw;
+    color: rgb(219, 138, 138);
 }
 .close{
     position: absolute;
@@ -106,7 +119,7 @@ p{
     box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
     border: none;
     width: 85%;
-    height: 16vw;
+    height: 12vw;
     font-family: comicSans;
     color: rgb(219, 138, 138);
     font-size: 1vw;

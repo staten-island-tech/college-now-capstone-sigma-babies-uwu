@@ -29,7 +29,9 @@
 <script setup>
 import { ref } from 'vue'
 import router from '../router/index'
+import { useStore } from '@/stores/store'
 
+const store = useStore()
 const logIn = ref(true)
 const username = ref('')
 const newusername = ref('')
@@ -58,6 +60,8 @@ async function login(username, password) {
   console.log(res)
   if (res.status != 400) {
     failedLogin.value = false
+    store.loggedUser.value = username
+    console.log(store.loggedUser.value)
     router.push({ path: '/' })
   } else {
     failedLogin.value = true
@@ -81,6 +85,8 @@ async function register(username, password, name) {
   if (res.status != 400) {
     failedLogin.value = false
     router.push({ path: '/' })
+    store.loggedUser.value = res.body
+    console.log(store.loggedUser)
   } else {
     failedLogin.value = true
   }

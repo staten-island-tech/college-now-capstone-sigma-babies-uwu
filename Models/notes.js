@@ -22,11 +22,6 @@ const noteSchema = new mongoose.Schema({
     trim: true,
     required: "Please provide today's date",
   },
-  owner: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
 });
 
 noteSchema.pre("save", function (next) {

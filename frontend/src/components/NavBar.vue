@@ -1,8 +1,8 @@
 <template>
     <div id="nav">
       <div class="wrapper">
+        <RouterLink to="/" class="headertext1">GRIND</RouterLink>
         <RouterLink to="/max" class="headertext1">MAX</RouterLink>
-        <RouterLink to="/grind" class="headertext1">GRIND</RouterLink>
       </div>
     </div>
 </template>
@@ -24,6 +24,7 @@ text-decoration: none;
 color: rgb(255, 182, 194);
 font-family: comicSans;
 font-size: 1.3vw;
+font-weight: bolder;
 }
 .headertext1:hover{
   color: rgb(219, 138, 138);

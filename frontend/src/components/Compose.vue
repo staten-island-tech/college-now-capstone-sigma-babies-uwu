@@ -43,18 +43,18 @@ async function create(title, note) {
 </script>
 
 <template>
-    <div class="compose">
-        <button class="close">×</button>
-        <form action="" class="form" @submit.prevent="create(title, body)">
+    <div class="composeCom">
+        <button class="closeCom">×</button>
+        <form action="" class="formCom" @submit.prevent="create(title, body)">
             <div>
-            <p>Title:</p>
-            <textarea class="title" maxlength="40" type="text" placeholder="TITLE"  required > </textarea>
+            <p class="subTitleCom">Title:</p>
+            <textarea class="titleCom" maxlength="40" type="text" placeholder="TITLE"  required > </textarea>
             </div>
             <div>
-                <p>Note:</p>
-                <textarea class="note" type="text"  v-model="note" required > </textarea>
+                <p class="subTitleCom">Note:</p>
+                <textarea class="noteCom" type="text"  v-model="note" required > </textarea>
             </div>
-            <button class="submit" type="submit">SUBMIT</button>
+            <button class="submitCom" type="submit">SUBMIT</button>
         </form>
     </div>
 </template>
@@ -63,7 +63,7 @@ async function create(title, note) {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-.submit{
+.submitCom{
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
   box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
@@ -75,7 +75,7 @@ async function create(title, note) {
     font-size: .8vw;
     color: rgb(219, 138, 138);
 }
-.close{
+.closeCom{
     position: absolute;
     top: 1.5vw;
     right: 2vw;
@@ -86,20 +86,20 @@ async function create(title, note) {
     -o-transition-duration: 1s;
     transition-duration: .2s;
 }
-.close:hover{
+.closeCom:hover{
     scale: 1.2;
 }
-.close:active{
+.closeCom:active{
     transform: translateY(.3vw);
 }
-p{
+.subTitleCom{
     font-size: 1vw;
     color: rgb(219, 138, 138);
     font-family: comicSans;
     font-weight: bold;
     
 }
-.compose{
+.composeCom{
     height: 30vw;
     width: 25vw;
     background-color: rgb(255, 255, 255);
@@ -109,11 +109,11 @@ p{
     bottom: 4vw;
     right: 2vw;
 }
-.form{
+.formCom{
     margin-top: 3vw;
     margin-left: 1vw;
 }
-.note{
+.noteCom{
     border-radius: 1vw;
     box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
     border: none;
@@ -131,7 +131,7 @@ textarea:focus, input:focus{
 textarea{
     resize: none;
 }
-.title{
+.titleCom{
     border-radius: .5vw;
     width: 85%;
     height: 1.5vw;

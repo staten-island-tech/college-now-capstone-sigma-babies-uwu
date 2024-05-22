@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div id="con">
     <div v-if="logIn">
       <form @submit.prevent="login(username, password)">
         <p>LOG IN TO YOUR SIGMA GRINDSET</p>
         <input type="username" placeholder="username" v-model="username" required />
         <input type="password" placeholder="password" v-model="password" required />
-        <button type="submit">submit</button>
+        <button type="submit">Login</button>
+        <button @click="createNew">Sign Up</button>
       </form>
-      <button @click="createNew">Create a new account</button>
       <div v-if="failedLogin">
         <p>Failed to find your account. Please try again.</p>
       </div>
@@ -25,6 +25,68 @@
     </form>
   </div>
 </template>
+<style scoped>
+@font-face {
+  font-family: comicSans;
+  src: url(comicsans.ttf);
+}
+input{
+  display: block;
+  background-color: #ffffff;
+  border: none;
+  padding: 1rem;
+  font-family: comicSans;
+  font-size: 1rem;
+  width: 90%;
+  border-radius: 1rem;
+  color: lightcoral;
+  box-shadow: 0 0.4rem #dfd9d9;
+  cursor: pointer;
+  margin-bottom: 1vw;
+}
+button{
+  color: lightcoral;
+  background-color: #ffffff;
+  font-family: comicSans;
+  display: inline;
+  width: 40%;
+  border-radius: 2vw;
+  cursor: pointer;
+  user-select: none;
+  margin-right: 1vw;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  font-size: 1rem;
+  font-weight: 700;
+  height: 56px;
+  justify-content: center;
+  align-items: center;
+  display: inline;
+  overflow-wrap: break-word;
+  border: 0 solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+  padding: 1vw;
+  text-decoration: none;
+}
+button:hover{
+  color: #ffffff;
+  background-color: rgb(219, 138, 138);
+}
+#con{
+  position: absolute;
+  left: 50%;
+    transform: translate(-50%, 0);
+    top: 35%;
+}
+p{
+  text-align: center;
+  font-family: comicSans;
+    font-weight: bold;
+    color: rgb(219, 138, 138);
+    font-size: 1vw;
+}
+</style>
 
 <script setup>
 import { ref } from 'vue'

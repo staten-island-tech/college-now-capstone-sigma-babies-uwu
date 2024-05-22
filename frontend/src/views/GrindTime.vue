@@ -2,8 +2,11 @@
 import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Compose from '../components/Compose.vue'
+import { useStore } from '@/stores/store'
+
+const store = useStore()
 let notes = ref([])
-const selectedNote = ref({})
+
 // async function getNote() {
 //   let res = await fetch('http://localhost:3000/note/get', {
 //     method: 'GET',
@@ -15,13 +18,23 @@ const selectedNote = ref({})
 // }
 // getNote()
 function selectNote(note) {
-  selectedNote.value = note
+  store.selectedNote = note
 }
 </script>
 <template>
   <div>
     <NavBar />
-    <Compose />
+    <Compose v-if="store.createView" />
+    <button
+      class="createNote"
+      @click="
+        () => {
+          store.createView = !store.createView
+        }
+      "
+    >
+      Create
+    </button>
     <div class="con">
       <div class="leftCon">
         <div class="left" v-for="note in notes" :key="note.id" @click="selectNote(note)">
@@ -31,9 +44,9 @@ function selectNote(note) {
       <div class="right">
         <div class="noteCon">
           <button class="close">×</button>
-          <h2 class="title">{{ selectedNote.title }}</h2>
-          <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
-          <p class="subTxt">{{ selectedNote.note }}</p>
+          <h2 class="title">{{ store.selectedNote.title }}</h2>
+          <h3 class="subTxt" id="date">{{ store.selectedNote.date }}</h3>
+          <p class="subTxt">{{ store.selectedNote.note }}</p>
         </div>
       </div>
     </div>

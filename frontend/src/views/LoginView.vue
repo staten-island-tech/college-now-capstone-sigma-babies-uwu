@@ -45,6 +45,11 @@ function createNew() {
   failedLogin.value = false
 }
 
+import { onMounted } from 'vue'
+onMounted(() => {
+  store.getUsers()
+})
+
 async function login(username, password) {
   console.log(username, password)
   const res = await fetch('http://localhost:3000/user/login', {
@@ -57,11 +62,11 @@ async function login(username, password) {
       password: password
     })
   })
-  console.log(res)
-  if (res.status != 400) {
+
+  if (res.ok) {
+    const data = await res.json()
+    store.loggedUser = data.user
     failedLogin.value = false
-    store.loggedUser = username
-    console.log(store.loggedUser)
     router.push({ path: '/' })
   } else {
     failedLogin.value = true
@@ -82,11 +87,11 @@ async function register(username, password, name) {
     })
   })
   console.log(res)
-  if (res.status != 400) {
+  if (res.ok) {
     failedLogin.value = false
     router.push({ path: '/' })
-    store.loggedUser = res.body
-    console.log(store.loggedUser)
+    const data = await res.json()
+    store.loggedUser = data.user
   } else {
     failedLogin.value = true
   }

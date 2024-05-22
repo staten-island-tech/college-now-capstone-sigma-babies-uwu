@@ -19,7 +19,7 @@ const selectedNote = ref({})
 // }
 // getNote()
 function selectNote(note) {
-  selectedNote.value = note
+  store.selectedNote = note
 }
 async function create(title, note) {
   const date = new Date()
@@ -85,9 +85,9 @@ async function create(title, note) {
       <div class="right">
         <div class="noteCon">
           <button class="close">×</button>
-          <h2 class="title">{{ selectedNote.title }}</h2>
-          <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
-          <p class="subTxt">{{ selectedNote.note }}</p>
+          <h2 class="title">{{ store.selectedNote.title }}</h2>
+          <h3 class="subTxt" id="date">{{ store.selectedNote.date }}</h3>
+          <p class="subTxt">{{ store.selectedNote.note }}</p>
         </div>
       </div>
       <button v-if="!showCompose" @click="showCompose =!showCompose" class="button-45">+</button>

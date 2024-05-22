@@ -8,7 +8,6 @@ const note = ref('')
 
 async function create(title, note) {
   const date = new Date()
-
   let day = date.getDate()
   let month = date.getMonth() + 1
   let year = date.getFullYear()
@@ -34,8 +33,8 @@ async function create(title, note) {
       user: store.loggedUser
     })
   })
-  console.log(res)
-  if (res.status != 400) {
+  console.log(res, store.loggedUser)
+  if (res.status != 500) {
     console.log(dateString)
   } else {
     console.log('wtflip')

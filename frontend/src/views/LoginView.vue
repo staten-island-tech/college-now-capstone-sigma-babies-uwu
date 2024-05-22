@@ -60,8 +60,8 @@ async function login(username, password) {
   console.log(res)
   if (res.status != 400) {
     failedLogin.value = false
-    store.loggedUser.value = username
-    console.log(store.loggedUser.value)
+    store.loggedUser = username
+    console.log(store.loggedUser)
     router.push({ path: '/' })
   } else {
     failedLogin.value = true
@@ -85,7 +85,7 @@ async function register(username, password, name) {
   if (res.status != 400) {
     failedLogin.value = false
     router.push({ path: '/' })
-    store.loggedUser.value = res.body
+    store.loggedUser = res.body
     console.log(store.loggedUser)
   } else {
     failedLogin.value = true

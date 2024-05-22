@@ -2,18 +2,21 @@
 import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Compose from '../components/Compose.vue'
+import { useStore } from '../stores/store'
+const noteStore = useStore()
 let notes = ref([])
+notes.value = noteStore.userNotes
 const selectedNote = ref({})
-async function getNote() {
-  let res = await fetch('http://localhost:3000/note/get', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  })
-  let data = await res.json()
-  notes.value = data
-  console.log(notes.value)
-}
-getNote()
+// async function getNote() {
+//   let res = await fetch('http://localhost:3000/note/get', {
+//     method: 'GET',
+//     headers: { 'Content-Type': 'application/json' }
+//   })
+//   let data = await res.json()
+//   notes.value = data
+//   console.log(notes.value)
+// }
+// getNote()
 function selectNote(note) {
   selectedNote.value = note
 }

@@ -6,16 +6,18 @@ export const useStore = defineStore('store', {
   actions: {
     async filterNotes() {
       const res = await fetch('http://localhost:3000/note/get', {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         }
       })
-      let data = await res.json()
+        let data = await res.json()
       let filtered = data.filter((note) => {
-        note.user = this.loggedUser
+        note.username = this.loggedUser
       })
       this.userNotes.value = filtered
+      
+      console.log(this.userNotes)
     }
   }
 })

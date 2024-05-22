@@ -5,7 +5,7 @@ import Compose from '../components/Compose.vue'
 import { useStore } from '../stores/store'
 const noteStore = useStore()
 let notes = ref([])
-notes.value = noteStore.userNotes
+const showCompose = ref(false)
 const selectedNote = ref({})
 // async function getNote() {
 //   let res = await fetch('http://localhost:3000/note/get', {
@@ -24,7 +24,7 @@ function selectNote(note) {
 <template>
   <div>
     <NavBar />
-    <Compose />
+    <Compose v-if="showCompose" />
     <div class="con">
       <div class="leftCon">
         <div class="left" v-for="note in notes" :key="note.id" @click="selectNote(note)">
@@ -39,6 +39,7 @@ function selectNote(note) {
           <p class="subTxt">{{ selectedNote.note }}</p>
         </div>
       </div>
+      <button v-if="!showCompose" @click="showCompose =!showCompose" class="button-45">+</button>
     </div>
   </div>
 </template>
@@ -46,6 +47,60 @@ function selectNote(note) {
 @font-face {
   font-family: comicSans;
   src: url(comicsans.ttf);
+}
+.button-45 {
+  position: absolute;
+  right: 4vw;
+  bottom: 4vw;
+  align-items: center;
+  background-color: rgb(255, 255, 255);
+  background-position: 0 0;
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 11px;
+  box-sizing: border-box;
+  color: #D33A2C;
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 33.4929px;
+  list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
+  padding: 2px 12px;
+  text-align: left;
+  text-decoration: none;
+  text-shadow: none;
+  text-underline-offset: 1px;
+  transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  word-break: break-word;
+}
+
+.button-45:active,
+.button-45:hover,
+.button-45:focus {
+  outline: 0;
+}
+
+
+.button-45:active {
+  background-color: #D33A2C;
+  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
+  color: #FFFFFF;
+}
+
+.button-45:hover {
+  background-color: #FFE3E3;
+  border-color: #FAA4A4;
+}
+.composeBtn{
+  position: absolute;
+  padding: 1vw;
+font-size: 2vw;
+  right: 2vw;
+  bottom: 2vw;
 }
 .close {
   position: absolute;

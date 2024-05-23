@@ -164,6 +164,11 @@ function logout() {
   router.push({ path: '/login' })
   store.loggedUser.value = {}
 }
+function tester(note){
+  console.log('test')
+  console.log(selectedNote.value)
+  console.log(note)
+}
 </script>
 <template>
   <div>
@@ -212,7 +217,7 @@ function logout() {
         </h2>
         <h2 class="title" v-else>No notes yet! Create one to start!</h2>
         <div class="scroll" v-if="myNotes.length > 0">
-          <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
+          <div  v-for="note in myNotes" class="left" :key="note.id" @click="selectNote(note), tester(note)" v-bind:style= "[selectedNote === note ? 'background-color: #ffdcdc' :   'background-color: rgb(255, 255, 255)']">
             <h2>{{ note.title }}</h2>
           </div>
         </div>
@@ -239,7 +244,10 @@ function logout() {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-
+.selectedNote{
+  background-color: #5a7ae4;
+  width: 50vw;
+}
 .submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
@@ -476,7 +484,7 @@ p {
 }
 .left {
   margin-top: 1vw;
-  background-color: rgb(255, 255, 255);
+  /* background-color: rgb(255, 255, 255); */
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   width: 20vw;
   border-radius: 3vw;
@@ -542,4 +550,5 @@ p {
   background: rgb(219, 138, 138);
   cursor: pointer;
 }
+
 </style>

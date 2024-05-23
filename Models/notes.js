@@ -23,7 +23,7 @@ const noteSchema = new mongoose.Schema({
     trim: true,
     required: "Please provide today's date",
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
   },

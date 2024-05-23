@@ -42,6 +42,7 @@ exports.createNote = async (req, res) => {
       throw new Error("Unable to create note: User not found");
     }
     const note = new Note(req.body);
+    // const note = new Note({ ...req.body, user: req.user._id });
     await note.save();
     res.json(note);
   } catch (error) {

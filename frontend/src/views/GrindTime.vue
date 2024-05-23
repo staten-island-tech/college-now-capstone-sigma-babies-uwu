@@ -26,9 +26,8 @@ async function getNotes() {
     console.log(res)
   } else {
     const data = await res.json()
-    console.log(data, store.loggedUser.username)
-    myNotes.value = data.filter((notes) => {
-      notes.user = store.loggedUser.user
+    myNotes.value = data.filter((note) => {
+      return note.user === store.loggedUser.username
     })
   }
 }
@@ -63,7 +62,7 @@ async function create(title, note) {
     body: JSON.stringify({
       title: title,
       note: note,
-      user: 'gh',
+      user: store.loggedUser.username,
       date: dateString
     })
   })
@@ -73,6 +72,7 @@ async function create(title, note) {
     const data = await res.json()
     selectNote(data)
     getNotes()
+    console.log(data)
   } else if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {

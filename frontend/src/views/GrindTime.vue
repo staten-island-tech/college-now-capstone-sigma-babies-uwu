@@ -220,7 +220,7 @@ function logout() {
       <div class="right">
         <div class="noteCon">
           <div class="buttonBar">
-            <button @click="showEdit = !showEdit" class="editButton">edit</button>
+            <button @click="showEdit = !showEdit" class="editButton">Edit</button>
             <button v-if="shouldShowCloseButton" class="delete" @click="del()">Delete</button>
             <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
           </div>
@@ -257,6 +257,9 @@ function logout() {
   border: 1px solid rgb(255, 200, 200);
   background-color: #ffeded;
   color: rgb(209, 120, 120);
+}
+button{
+  font-family: comicSans;
 }
 button:hover {
   cursor: pointer;
@@ -421,8 +424,14 @@ textarea {
 
 .editButton:hover,
 .delete:hover {
-  border: 1px solid #faa4a4;
-  background-color: #ffeaea;
+  /* text-decoration: underline; */
+  text-decoration: double;
+  scale: 1.1;
+  text-decoration: underline;
+}
+.editButton, .delete{
+  background-color: transparent;
+  border: none;
 }
 .close:active {
   transform: translateY(0.3vw);

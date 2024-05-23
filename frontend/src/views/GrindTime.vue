@@ -108,6 +108,7 @@ async function create(title, note) {
   <div>
     <NavBar />
     <div>
+      <button class="logout">Log Out</button>
       <div class="composeCom" v-if="showCompose">
         <button class="closeCom" @click="showCompose = !showCompose">×</button>
         <form action="" class="formCom" @submit.prevent="create(title, note)">
@@ -154,16 +155,29 @@ async function create(title, note) {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
+.logout{
+  position: absolute;
+  top: 2vw;
+  right: 2vw;
+  background-color: rgb(255, 255, 255);
+  border-radius: 2vw;
+  box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+  padding: .5vw;
+  color: rgb(219, 138, 138);
+  font-size: 1vw;
+  font-family: comicSans;
+}
 .submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
-  box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
+  box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
   border: none;
   padding: 0.5vw;
   font-family: comicSans;
   font-weight: bold;
   border-radius: 0.9vw;
   font-size: 0.8vw;
+  border: none;
   color: rgb(219, 138, 138);
 }
 .submitCom:hover {

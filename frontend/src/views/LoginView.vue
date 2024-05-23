@@ -149,10 +149,11 @@ async function register(username, password, name) {
   })
   console.log(res)
   if (res.ok) {
+    const data = await res.json()
+    store.loggedUser = data.newUser
+
     failedLogin.value = false
     router.push({ path: '/' })
-    const data = await res.json()
-    store.loggedUser = data.user
   } else {
     failedLogin.value = true
   }

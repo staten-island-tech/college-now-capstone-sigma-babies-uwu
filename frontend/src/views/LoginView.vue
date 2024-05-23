@@ -15,9 +15,9 @@
 
     <form @submit.prevent="register(newusername, newpassword, name)" v-else>
       <p>BEGIN YOUR SIGMA GRINDSET</p>
-      <input type="newusername" placeholder="username" v-model="newusername" required />
+      <input type="username" placeholder="username" v-model="newusername" required />
       <input type="name" placeholder="name" v-model="name" required />
-      <input type="newpassword" placeholder="password" v-model="newpassword" required />
+      <input type="password" placeholder="password" v-model="newpassword" required />
       <button type="submit">Submit</button>
       <div v-if="failedLogin">
         <p>Username unavailable. Please submit another.</p>

@@ -14,38 +14,33 @@ const showEdit = ref(false)
 const selectedNote = ref({})
 const titleEdit = ref('')
 const noteEdit = ref('')
-
 let shouldShowCloseButton = ref(false)
-function selectNote(note) {
+
+async function selectNote(note) {
   shouldShowCloseButton.value = true
   selectedNote.value = note
   titleEdit.value = note.title
   noteEdit.value = note.note
   console.log(titleEdit.value)
+  document.querySelector('.right').style.width = '50vw'
+  document.querySelector('.right').style.opacity = '100%'
+  document.querySelectorAll('.left').forEach((x) => {
+    x.style.width = '20vw'
+  })
 }
 function deselectNote() {
+  shouldShowCloseButton.value = false
   selectedNote.value = {}
   titleEdit.value = ''
   noteEdit.value = ''
+
+  document.querySelector('.right').style.width = '0%'
+  document.querySelector('.right').style.opacity = '0%'
+  document.querySelectorAll('.left').forEach((x) => {
+    x.style.width = '50vw'
+  })
 }
-async function del() {
-  if (confirm('ya sure?')) {
-    let id = selectedNote.value
-    console.log(id._id)
-    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if (res.status === 200) {
-      selectedNote.value = {}
-      getNotes()
-    } else {
-      console.log('oopsies')
-    }
-  }
-}
+
 async function getNotes() {
   const res = await fetch(`http://localhost:3000/note/get`, {
     method: 'GET',
@@ -62,17 +57,16 @@ async function getNotes() {
     })
     myNotes.value.reverse()
   }
-  if (myNotes.value.length > 0) {
-    shouldShowCloseButton.value = true
-  } else {
-    shouldShowCloseButton.value = false
-  }
 }
 onMounted(() => {
   if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {
-    getNotes()
+    async function setup() {
+      await getNotes()
+      selectNote(myNotes.value[0])
+    }
+    setup()
   }
 })
 
@@ -133,13 +127,33 @@ async function create(title, note) {
   if (res.ok) {
     showCompose.value = false
     const data = await res.json()
-    selectNote(data)
     getNotes()
+    selectNote(data)
+
     console.log(data)
   } else if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {
     console.log('Error', res)
+  }
+}
+async function del() {
+  if (confirm('ya sure?')) {
+    let id = selectedNote.value
+    console.log(id._id)
+    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.ok) {
+      selectedNote.value = {}
+      getNotes()
+      deselectNote()
+    } else {
+      console.log('oopsies')
+    }
   }
 }
 </script>
@@ -191,21 +205,33 @@ async function create(title, note) {
     </div>
     <div class="con">
       <div class="leftCon">
-        <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
-          <h2>{{ note.title }}</h2>
+        <h2 class="title userHeader" v-if="myNotes.length > 0">
+          {{ store.loggedUser.name }}'s Notes
+        </h2>
+        <h2 class="title" v-else>No notes yet! Create one to start!</h2>
+        <div class="scroll" v-if="myNotes.length > 0">
+          <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
+            <h2>{{ note.title }}</h2>
+          </div>
         </div>
       </div>
       <div class="right">
         <div class="noteCon">
-          <button v-if="shouldShowCloseButton" class="close" @click="del()">Delete</button>
-          <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
+          <div class="buttonBar">
+            <button
+              v-if="selectedNote.title != ''"
+              @click="showEdit = !showEdit"
+              class="editButton"
+            >
+              edit
+            </button>
+            <button v-if="shouldShowCloseButton" class="delete" @click="del()">Delete</button>
+            <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
+          </div>
 
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>
-          <button v-if="selectedNote.title != ''" @click="showEdit = !showEdit" class="button-45">
-            edit
-          </button>
         </div>
       </div>
       <button v-if="!showCompose" @click="showCompose = !showCompose" class="button-45">+</button>
@@ -217,6 +243,7 @@ async function create(title, note) {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
+
 .submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
@@ -226,11 +253,14 @@ async function create(title, note) {
   font-family: comicSans;
   font-weight: bold;
   border-radius: 0.9vw;
-  font-size: 0.8vw;
+  font-size: 0.7rem;
   color: rgb(219, 138, 138);
 }
 .submitCom:hover {
   cursor: pointer;
+  border: 1px solid rgb(255, 200, 200);
+  background-color: #ffeded;
+  color: rgb(209, 120, 120);
 }
 button:hover {
   cursor: pointer;
@@ -266,6 +296,7 @@ button:hover {
   box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
   position: absolute;
   border-radius: 2vw;
+  border: 3px solid rgb(255, 223, 223);
   bottom: 4vw;
   right: 2vw;
 }
@@ -317,9 +348,8 @@ textarea {
   color: rgb(219, 138, 138);
   cursor: pointer;
   display: flex;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 33.4929px;
+  font-size: 2rem;
+
   list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
   padding: 2px 12px;
   text-align: left;
@@ -349,8 +379,8 @@ textarea {
 }
 
 .button-45:hover {
-  background-color: #ffe3e3;
-  border-color: #faa4a4;
+  background-color: #ffeded;
+  border-color: #ffb9b9;
 }
 .composeBtn {
   position: absolute;
@@ -359,22 +389,42 @@ textarea {
   right: 2vw;
   bottom: 2vw;
 }
-.close {
-  position: absolute;
+
+.buttonBar {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: right;
+}
+.editButton,
+.close,
+.delete {
   right: 15vw;
   border: none;
-  background: transparent;
-  font-size: 2vw;
+  background-color: #fff1f1;
+  font-size: 1.3rem;
   color: rgb(219, 138, 138);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 0.5rem;
   -o-transition-duration: 1s;
   transition-duration: 0.2s;
+  border-radius: 0.7rem;
 }
-.close:hover {
-  scale: 1.2;
+.close {
+  font-size: 3vw;
+  background: transparent;
+}
+.close:hover,
+.editButton:hover,
+.delete:hover {
+  border: 1px solid #faa4a4;
+  background-color: #ffeaea;
 }
 .close:active {
   transform: translateY(0.3vw);
 }
+
 #date {
   margin-bottom: 2vw;
 }
@@ -419,7 +469,13 @@ p {
   width: 20vw;
   border-radius: 3vw;
   margin: 3vw;
+  transition: all 1s;
 }
+.userHeader {
+  margin-left: 3vw;
+  font-size: 2rem;
+}
+
 .left:active {
   transform: translateY(0.3vw);
 }
@@ -432,11 +488,18 @@ p {
   background-color: rgb(255, 255, 255);
   height: 70vh;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  transition: all 1s;
+  border: 3px solid rgb(255, 223, 223);
 }
 .leftCon {
   height: 70vh;
-  overflow-y: scroll;
+
   margin-right: 1vw;
+}
+.scroll {
+  height: 60vh;
+
+  overflow-y: scroll;
 }
 .con {
   display: flex;

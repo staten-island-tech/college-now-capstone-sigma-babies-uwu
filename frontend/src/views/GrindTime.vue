@@ -11,6 +11,34 @@ const selectedNote = ref({})
 function selectNote(note) {
   store.selectedNote = note
 }
+async function del() {
+  if (confirm("ya sure?")) {
+    let id = store.selectedNote._id;
+    let res = await fetch(`http://localhost:3000/note/delete/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.status === 200) {
+      store.selectedNote = {}
+      getNote()
+
+    } else {
+      console.log('oopsies');
+    }
+  }
+}
+async function getNote() {
+  let res = await fetch('http://localhost:3000/note/get', {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
+  })
+  let data = await res.json()
+  notes.value = data
+  console.log(notes.value)
+}
+getNote()
 async function create(title, note) {
   const date = new Date()
   let day = date.getDate()
@@ -74,7 +102,7 @@ async function create(title, note) {
       </div>
       <div class="right">
         <div class="noteCon">
-          <button class="close">×</button>
+          <button class="close" @click="del()" >×</button>
           <h2 class="title">{{ store.selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ store.selectedNote.date }}</h3>
           <p class="subTxt">{{ store.selectedNote.note }}</p>
@@ -232,7 +260,7 @@ font-size: 2vw;
 }
 .close {
   position: absolute;
-  right: 27vw;
+  right: 15vw;
   border: none;
   background: transparent;
   font-size: 2vw;

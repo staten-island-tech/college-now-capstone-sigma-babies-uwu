@@ -8,31 +8,39 @@ const store = useStore()
 let myNotes = ref([])
 const title = ref('')
 const note = ref('')
-const showCompose = ref(false)
-const selectedNote = ref({})
-let shouldShowCloseButton = ref(false)
-function selectNote(note) {
-  selectedNote.value = note
-}
-async function del() {
-  if (confirm("ya sure?")) {
-    let id = selectedNote.value
-    console.log(id._id)
-    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if (res.status === 200) {
-      selectedNote.value = {}
-      getNotes()
 
-    } else {
-      console.log('oopsies');
-    }
-  }
+const showCompose = ref(false)
+const showEdit = ref(false)
+const selectedNote = ref({})
+const titleEdit = ref('')
+const noteEdit = ref('')
+let shouldShowCloseButton = ref(false)
+
+function selectNote(note) {
+  shouldShowCloseButton.value = true
+  selectedNote.value = note
+  titleEdit.value = note.title
+  noteEdit.value = note.note
+  console.log(titleEdit.value)
+  document.querySelector('.right').style.width = '50vw'
+  document.querySelector('.right').style.opacity = '100%'
+  document.querySelectorAll('.left').forEach((x) => {
+    x.style.width = '20vw'
+  })
 }
+function deselectNote() {
+  shouldShowCloseButton.value = false
+  selectedNote.value = {}
+  titleEdit.value = ''
+  noteEdit.value = ''
+
+  document.querySelector('.right').style.width = '0%'
+  document.querySelector('.right').style.opacity = '0%'
+  document.querySelectorAll('.left').forEach((x) => {
+    x.style.width = '50vw'
+  })
+}
+
 async function getNotes() {
   const res = await fetch(`http://localhost:3000/note/get`, {
     method: 'GET',
@@ -49,21 +57,24 @@ async function getNotes() {
     })
     myNotes.value.reverse()
   }
-  if (myNotes.value.length > 0){
-    shouldShowCloseButton.value = true
-  }else{
-    shouldShowCloseButton.value = false
-  }
 }
 onMounted(() => {
   if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {
-    getNotes()
+    async function setup() {
+      await getNotes()
+      if (myNotes.value.length > 0) {
+        selectNote(myNotes.value[0])
+      } else {
+        deselectNote()
+      }
+    }
+    setup()
   }
 })
 
-async function create(title, note) {
+function getTime() {
   const date = new Date()
   let day = date.getDate()
   let month = date.getMonth() + 1
@@ -77,7 +88,34 @@ async function create(title, note) {
     minuteTime = minute
   }
   let dateString = `${month}/${day}/${year} ${hour}:${minuteTime}`
+  return dateString
+}
 
+async function updateNote(noteid, title, note) {
+  const res = await fetch(`http://localhost:3000/note/update/${noteid}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: title,
+      note: note,
+      user: store.loggedUser.username,
+      date: getTime()
+    })
+  })
+  console.log(noteid)
+  if (res.ok) {
+    showEdit.value = false
+    const data = await res.json()
+    selectNote(data)
+    getNotes()
+  } else {
+    console.log(res)
+  }
+}
+
+async function create(title, note) {
   const res = await fetch('http://localhost:3000/note/add', {
     method: 'POST',
     headers: {
@@ -87,41 +125,57 @@ async function create(title, note) {
       title: title,
       note: note,
       user: store.loggedUser.username,
-      date: dateString
+      date: getTime()
     })
   })
   if (res.ok) {
     showCompose.value = false
-    //selectedNote.value
     const data = await res.json()
-    selectNote(data)
     getNotes()
+    selectNote(data)
+
     console.log(data)
   } else if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {
-    console.log('Error', res)
+    console.log('Error', res, store.loggedUser.username)
   }
+}
+async function del() {
+  if (confirm('ya sure?')) {
+    let id = selectedNote.value
+    console.log(id._id)
+    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.ok) {
+      selectedNote.value = {}
+      getNotes()
+      deselectNote()
+    } else {
+      console.log('oopsies')
+    }
+  }
+}
+function logout() {
+  router.push({ path: '/login' })
+  store.loggedUser.value = {}
 }
 </script>
 <template>
   <div>
     <NavBar />
     <div>
-      <button class="logout">Log Out</button>
+      <button class="logout button-45" @click="logout">Log Out</button>
       <div class="composeCom" v-if="showCompose">
         <button class="closeCom" @click="showCompose = !showCompose">×</button>
         <form action="" class="formCom" @submit.prevent="create(title, note)">
           <div>
             <p class="subTitleCom">Title:</p>
-            <textarea
-              class="titleCom"
-              maxlength="40"
-              type="text"
-              placeholder="TITLE"
-              v-model="title"
-              required
-            >
+            <textarea class="titleCom" maxlength="40" type="text" v-model="title" required>
             </textarea>
           </div>
           <div>
@@ -131,16 +185,46 @@ async function create(title, note) {
           <button class="submitCom" type="submit">SUBMIT</button>
         </form>
       </div>
+      <div class="composeCom" v-if="showEdit">
+        <button class="closeCom" @click="showEdit = !showEdit">×</button>
+        <form
+          action=""
+          class="formCom"
+          @submit.prevent="updateNote(selectedNote['_id'], titleEdit, noteEdit)"
+        >
+          <div>
+            <p class="subTitleCom">Title:</p>
+            <textarea class="titleCom" maxlength="40" type="text" v-model="titleEdit" required>
+            </textarea>
+          </div>
+          <div>
+            <p class="subTitleCom">Note:</p>
+            <textarea class="noteCom" type="text" v-model="noteEdit" required> </textarea>
+          </div>
+          <button class="submitCom" type="submit">SUBMIT</button>
+        </form>
+      </div>
     </div>
     <div class="con">
       <div class="leftCon">
-        <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
-          <h2>{{ note.title }}</h2>
+        <h2 class="title userHeader" v-if="myNotes.length > 0">
+          {{ store.loggedUser.name }}'s Notes
+        </h2>
+        <h2 class="title" v-else>No notes yet! Create one to start!</h2>
+        <div class="scroll" v-if="myNotes.length > 0">
+          <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
+            <h2>{{ note.title }}</h2>
+          </div>
         </div>
       </div>
       <div class="right">
         <div class="noteCon">
-          <button v-if="shouldShowCloseButton" class="close" @click="del()">×</button>
+          <div class="buttonBar">
+            <button @click="showEdit = !showEdit" class="editButton">Edit</button>
+            <button v-if="shouldShowCloseButton" class="delete" @click="del()">Delete</button>
+            <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
+          </div>
+
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>
@@ -155,18 +239,7 @@ async function create(title, note) {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-.logout{
-  position: absolute;
-  top: 2vw;
-  right: 2vw;
-  background-color: rgb(255, 255, 255);
-  border-radius: 2vw;
-  box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
-  padding: .5vw;
-  color: rgb(219, 138, 138);
-  font-size: 1vw;
-  font-family: comicSans;
-}
+
 .submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
@@ -176,12 +249,17 @@ async function create(title, note) {
   font-family: comicSans;
   font-weight: bold;
   border-radius: 0.9vw;
-  font-size: 0.8vw;
-  border: none;
+  font-size: 0.7rem;
   color: rgb(219, 138, 138);
 }
 .submitCom:hover {
   cursor: pointer;
+  border: 1px solid rgb(255, 200, 200);
+  background-color: #ffeded;
+  color: rgb(209, 120, 120);
+}
+button{
+  font-family: comicSans;
 }
 button:hover {
   cursor: pointer;
@@ -197,7 +275,8 @@ button:hover {
   -o-transition-duration: 1s;
   transition-duration: 0.2s;
 }
-.closeCom:hover {
+.closeCom:hover,
+.close:hover {
   scale: 1.2;
 }
 .closeCom:active {
@@ -217,6 +296,7 @@ button:hover {
   box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
   position: absolute;
   border-radius: 2vw;
+  border: 3px solid rgb(255, 223, 223);
   bottom: 4vw;
   right: 2vw;
 }
@@ -268,9 +348,8 @@ textarea {
   color: rgb(219, 138, 138);
   cursor: pointer;
   display: flex;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 33.4929px;
+  font-size: 2rem;
+
   list-style: outside url(https://www.smashingmagazine.com/images/bullet.svg) none;
   padding: 2px 12px;
   text-align: left;
@@ -300,8 +379,7 @@ textarea {
 }
 
 .button-45:hover {
-  background-color: #ffe3e3;
-  border-color: #faa4a4;
+  border: 2px solid rgb(219, 138, 138);
 }
 .composeBtn {
   position: absolute;
@@ -310,22 +388,55 @@ textarea {
   right: 2vw;
   bottom: 2vw;
 }
-.close {
+.logout {
   position: absolute;
+  top: 2vw;
+  right: 2vw;
+  height: 3rem;
+  font-size: 1vw;
+  font-family: comicSans;
+}
+.buttonBar {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: right;
+}
+.editButton,
+.close,
+.delete {
   right: 15vw;
   border: none;
-  background: transparent;
-  font-size: 2vw;
+  background-color: #fff1f1;
+  font-size: 1.3rem;
   color: rgb(219, 138, 138);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin: 0.5rem;
   -o-transition-duration: 1s;
-  transition-duration: 0.2s;
+  transition: all 0.5s;
+  border-radius: 0.7rem;
 }
-.close:hover {
-  scale: 1.2;
+.close {
+  font-size: 3vw;
+  background: transparent;
+}
+
+.editButton:hover,
+.delete:hover {
+  /* text-decoration: underline; */
+  text-decoration: double;
+  scale: 1.1;
+  text-decoration: underline;
+}
+.editButton, .delete{
+  background-color: transparent;
+  border: none;
 }
 .close:active {
   transform: translateY(0.3vw);
 }
+
 #date {
   margin-bottom: 2vw;
 }
@@ -364,13 +475,20 @@ p {
   font-size: 1vw;
 }
 .left {
-  margin-top: 2vw;
+  margin-top: 1vw;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   width: 20vw;
   border-radius: 3vw;
-  margin: 3vw;
+  margin-left: 3vw;
+  margin-right: 3vw;
+  transition: all 1s;
 }
+.userHeader {
+  margin-left: 3vw;
+  font-size: 2rem;
+}
+
 .left:active {
   transform: translateY(0.3vw);
 }
@@ -383,11 +501,18 @@ p {
   background-color: rgb(255, 255, 255);
   height: 70vh;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  transition: all 1s;
+  border: 3px solid rgb(255, 223, 223);
 }
 .leftCon {
   height: 70vh;
-  overflow-y: scroll;
+
   margin-right: 1vw;
+}
+.scroll {
+  height: 60vh;
+
+  overflow-y: scroll;
 }
 .con {
   display: flex;

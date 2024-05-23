@@ -1,18 +1,26 @@
 <template>
-    <div>
-        <NavBar/>
-        <img src="/cat.png"/>
+  <div>
+    <NavBar />
+    <div class="content">
+      <img src="/cat.png" />
+      <img src="/mega.jpg" />
+      <img src="/stare.jpg" />
     </div>
+  </div>
 </template>
 <script setup>
 import NavBar from '../components/NavBar.vue'
 </script>
 <style scoped>
-img{
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
-    margin-top: 5vw;
-    width: 30vw;
+.content {
+  width: 99vw;
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+img {
+  width: 20vw;
+  height: auto;
 }
 </style>

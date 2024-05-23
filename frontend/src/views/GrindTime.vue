@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
-import Compose from '../components/Compose.vue'
 import { useStore } from '../stores/store'
 import router from '../router/index'
 
@@ -15,7 +14,10 @@ const showEdit = ref(false)
 const selectedNote = ref({})
 const titleEdit = ref('')
 const noteEdit = ref('')
-async function selectNote(note) {
+
+let shouldShowCloseButton = ref(false)
+function selectNote(note) {
+  shouldShowCloseButton.value = true
   selectedNote.value = note
   titleEdit.value = note.title
   noteEdit.value = note.note
@@ -26,7 +28,24 @@ function deselectNote() {
   titleEdit.value = ''
   noteEdit.value = ''
 }
-
+async function del() {
+  if (confirm('ya sure?')) {
+    let id = selectedNote.value
+    console.log(id._id)
+    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (res.status === 200) {
+      selectedNote.value = {}
+      getNotes()
+    } else {
+      console.log('oopsies')
+    }
+  }
+}
 async function getNotes() {
   const res = await fetch(`http://localhost:3000/note/get`, {
     method: 'GET',
@@ -41,6 +60,12 @@ async function getNotes() {
     myNotes.value = data.filter((note) => {
       return note.user === store.loggedUser.username
     })
+    myNotes.value.reverse()
+  }
+  if (myNotes.value.length > 0) {
+    shouldShowCloseButton.value = true
+  } else {
+    shouldShowCloseButton.value = false
   }
 }
 onMounted(() => {
@@ -172,7 +197,9 @@ async function create(title, note) {
       </div>
       <div class="right">
         <div class="noteCon">
-          <button class="close" @click="deselectNote">×</button>
+          <button v-if="shouldShowCloseButton" class="close" @click="del()">Delete</button>
+          <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
+
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>
@@ -334,7 +361,7 @@ textarea {
 }
 .close {
   position: absolute;
-  right: 27vw;
+  right: 15vw;
   border: none;
   background: transparent;
   font-size: 2vw;

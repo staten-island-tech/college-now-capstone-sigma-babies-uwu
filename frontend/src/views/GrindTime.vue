@@ -11,6 +11,7 @@ const title = ref('')
 const note = ref('')
 const showCompose = ref(false)
 const selectedNote = ref({})
+let shouldShowCloseButton = ref(false)
 function selectNote(note) {
   selectedNote.value = note
 }
@@ -47,6 +48,12 @@ async function getNotes() {
     myNotes.value = data.filter((note) => {
       return note.user === store.loggedUser.username
     })
+    myNotes.value.reverse()
+  }
+  if (myNotes.value.length > 0){
+    shouldShowCloseButton.value = true
+  }else{
+    shouldShowCloseButton.value = false
   }
 }
 onMounted(() => {
@@ -133,7 +140,7 @@ async function create(title, note) {
       </div>
       <div class="right">
         <div class="noteCon">
-          <button class="close" @click="del()">×</button>
+          <button v-if="shouldShowCloseButton" class="close" @click="del()">×</button>
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>

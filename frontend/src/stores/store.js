@@ -4,34 +4,36 @@ import { defineStore } from 'pinia'
 export const useStore = defineStore('store', {
   state: () => ({
     loggedUser: ref(''),
-    userNotes: ref([]),
-    selectedNote: ref({}),
-    allUsers: ref([])
+    dailyExercise: ref({}),
+    dailyQuote: ref('')
   }),
 
   actions: {
-    async filterNotes() {
-      const res = await fetch('http://localhost:3000/note/get', {
+    async getInspo() {
+      const res = await fetch('https://api.api-ninjas.com/v1/quotes', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Api-Key': 'Ue+uGnI0/eRuj54SfYFtJw==FcgdXFMr6vzy8xMU'
         }
       })
       let data = await res.json()
-      // let filtered = data.filter((note) => {
-      //   note.user = this.loggedUser
-      // })
-      this.userNotes.value = data
+      this.dailyQuote = data[0].quote
+      console.log(data)
     },
-    async getUsers() {
-      const res = await fetch('http://localhost:3000/user/get', {
+    async getExercise() {
+      const res = await fetch('https://api.api-ninjas.com/v1/exercises', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Api-Key': 'Ue+uGnI0/eRuj54SfYFtJw==FcgdXFMr6vzy8xMU'
         }
       })
+      let index = Math.floor(Math.random() * 9)
       let data = await res.json()
-      this.allUsers.value = data
+
+      this.dailyExercise = data[index]
+      console.log(data[index], index)
     }
   }
 })

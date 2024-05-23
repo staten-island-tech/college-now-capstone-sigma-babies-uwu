@@ -16,16 +16,17 @@ function selectNote(note) {
 }
 async function del() {
   if (confirm("ya sure?")) {
-    let id = store.selectedNote._id;
-    let res = await fetch(`http://localhost:3000/note/delete/${id}`, {
+    let id = selectedNote.value
+    console.log(id._id)
+    let res = await fetch(`http://localhost:3000/note/delete/${id._id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       }
     })
     if (res.status === 200) {
-      store.selectedNote = {}
-      getNote()
+      selectedNote.value = {}
+      getNotes()
 
     } else {
       console.log('oopsies');
@@ -132,7 +133,7 @@ async function create(title, note) {
       </div>
       <div class="right">
         <div class="noteCon">
-          <button class="close">×</button>
+          <button class="close" @click="del()">×</button>
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>

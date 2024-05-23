@@ -35,9 +35,13 @@ exports.homePage = (req, res) => {
 
 exports.createNote = async (req, res) => {
   try {
-    const note = new Note({
-      ...req.body,
-    });
+    let username = req.body.user;
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new Error("Unable to create note: User not found");
+    }
+    const note = new Note(req.body);
+    // const note = new Note({ ...req.body, user: req.user._id });
     await note.save();
     res.json(note);
   } catch (error) {

@@ -9,10 +9,22 @@ const store = useStore()
 let myNotes = ref([])
 const title = ref('')
 const note = ref('')
+
 const showCompose = ref(false)
+const showEdit = ref(false)
 const selectedNote = ref({})
-function selectNote(note) {
+const titleEdit = ref('')
+const noteEdit = ref('')
+async function selectNote(note) {
   selectedNote.value = note
+  titleEdit.value = note.title
+  noteEdit.value = note.note
+  console.log(titleEdit.value)
+}
+function deselectNote() {
+  selectedNote.value = {}
+  titleEdit.value = ''
+  noteEdit.value = ''
 }
 
 async function getNotes() {
@@ -39,7 +51,7 @@ onMounted(() => {
   }
 })
 
-async function create(title, note) {
+function getTime() {
   const date = new Date()
   let day = date.getDate()
   let month = date.getMonth() + 1
@@ -53,7 +65,34 @@ async function create(title, note) {
     minuteTime = minute
   }
   let dateString = `${month}/${day}/${year} ${hour}:${minuteTime}`
+  return dateString
+}
 
+async function updateNote(noteid, title, note) {
+  const res = await fetch(`http://localhost:3000/note/update/${noteid}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      title: title,
+      note: note,
+      user: store.loggedUser.username,
+      date: getTime()
+    })
+  })
+  console.log(noteid)
+  if (res.ok) {
+    showEdit.value = false
+    const data = await res.json()
+    selectNote(data)
+    getNotes()
+  } else {
+    console.log(res)
+  }
+}
+
+async function create(title, note) {
   const res = await fetch('http://localhost:3000/note/add', {
     method: 'POST',
     headers: {
@@ -63,12 +102,11 @@ async function create(title, note) {
       title: title,
       note: note,
       user: store.loggedUser.username,
-      date: dateString
+      date: getTime()
     })
   })
   if (res.ok) {
     showCompose.value = false
-    //selectedNote.value
     const data = await res.json()
     selectNote(data)
     getNotes()
@@ -106,6 +144,25 @@ async function create(title, note) {
           <button class="submitCom" type="submit">SUBMIT</button>
         </form>
       </div>
+      <div class="composeCom" v-if="showEdit">
+        <button class="closeCom" @click="showEdit = !showEdit">×</button>
+        <form
+          action=""
+          class="formCom"
+          @submit.prevent="updateNote(selectedNote['_id'], titleEdit, noteEdit)"
+        >
+          <div>
+            <p class="subTitleCom">Title:</p>
+            <textarea class="titleCom" maxlength="40" type="text" v-model="titleEdit" required>
+            </textarea>
+          </div>
+          <div>
+            <p class="subTitleCom">Note:</p>
+            <textarea class="noteCom" type="text" v-model="noteEdit" required> </textarea>
+          </div>
+          <button class="submitCom" type="submit">SUBMIT</button>
+        </form>
+      </div>
     </div>
     <div class="con">
       <div class="leftCon">
@@ -115,10 +172,13 @@ async function create(title, note) {
       </div>
       <div class="right">
         <div class="noteCon">
-          <button class="close">×</button>
+          <button class="close" @click="deselectNote">×</button>
           <h2 class="title">{{ selectedNote.title }}</h2>
           <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
           <p class="subTxt">{{ selectedNote.note }}</p>
+          <button v-if="selectedNote.title != ''" @click="showEdit = !showEdit" class="button-45">
+            edit
+          </button>
         </div>
       </div>
       <button v-if="!showCompose" @click="showCompose = !showCompose" class="button-45">+</button>

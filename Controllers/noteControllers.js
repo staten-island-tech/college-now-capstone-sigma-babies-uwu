@@ -57,6 +57,7 @@ exports.getNote = async (req, res) => {
 exports.updateNote = async (req, res) => {
   try {
     const note = await Note.findById(req.params.id);
+    console.log(note);
     const updates = Object.keys(req.body);
     updates.forEach((update) => (note[update] = req.body[update]));
     await note.save();

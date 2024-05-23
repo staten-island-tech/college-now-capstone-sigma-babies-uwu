@@ -64,7 +64,11 @@ onMounted(() => {
   } else {
     async function setup() {
       await getNotes()
-      selectNote(myNotes.value[0])
+      if (myNotes.value.length > 0) {
+        selectNote(myNotes.value[0])
+      } else {
+        deselectNote()
+      }
     }
     setup()
   }
@@ -218,13 +222,7 @@ async function del() {
       <div class="right">
         <div class="noteCon">
           <div class="buttonBar">
-            <button
-              v-if="selectedNote.title != ''"
-              @click="showEdit = !showEdit"
-              class="editButton"
-            >
-              edit
-            </button>
+            <button @click="showEdit = !showEdit" class="editButton">edit</button>
             <button v-if="shouldShowCloseButton" class="delete" @click="del()">Delete</button>
             <button v-if="shouldShowCloseButton" class="close" @click="deselectNote()">×</button>
           </div>

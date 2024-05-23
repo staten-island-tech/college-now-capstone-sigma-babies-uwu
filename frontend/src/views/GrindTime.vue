@@ -160,25 +160,22 @@ async function del() {
     }
   }
 }
+function logout() {
+  router.push({ path: '/login' })
+  store.loggedUser.value = {}
+}
 </script>
 <template>
   <div>
     <NavBar />
     <div>
-      <button class="logout">Log Out</button>
+      <button class="logout button-45" @click="logout">Log Out</button>
       <div class="composeCom" v-if="showCompose">
         <button class="closeCom" @click="showCompose = !showCompose">×</button>
         <form action="" class="formCom" @submit.prevent="create(title, note)">
           <div>
             <p class="subTitleCom">Title:</p>
-            <textarea
-              class="titleCom"
-              maxlength="40"
-              type="text"
-              placeholder="TITLE"
-              v-model="title"
-              required
-            >
+            <textarea class="titleCom" maxlength="40" type="text" v-model="title" required>
             </textarea>
           </div>
           <div>
@@ -242,18 +239,7 @@ async function del() {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-.logout {
-  position: absolute;
-  top: 2vw;
-  right: 2vw;
-  background-color: rgb(255, 255, 255);
-  border-radius: 2vw;
-  box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
-  padding: 0.5vw;
-  color: rgb(219, 138, 138);
-  font-size: 1vw;
-  font-family: comicSans;
-}
+
 .submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
@@ -286,7 +272,8 @@ button:hover {
   -o-transition-duration: 1s;
   transition-duration: 0.2s;
 }
-.closeCom:hover {
+.closeCom:hover,
+.close:hover {
   scale: 1.2;
 }
 .closeCom:active {
@@ -389,8 +376,7 @@ textarea {
 }
 
 .button-45:hover {
-  background-color: #ffeded;
-  border-color: #ffb9b9;
+  border: 2px solid rgb(219, 138, 138);
 }
 .composeBtn {
   position: absolute;
@@ -399,7 +385,14 @@ textarea {
   right: 2vw;
   bottom: 2vw;
 }
-
+.logout {
+  position: absolute;
+  top: 2vw;
+  right: 2vw;
+  height: 3rem;
+  font-size: 1vw;
+  font-family: comicSans;
+}
 .buttonBar {
   display: flex;
   width: 100%;
@@ -418,14 +411,14 @@ textarea {
   padding-right: 1rem;
   margin: 0.5rem;
   -o-transition-duration: 1s;
-  transition-duration: 0.2s;
+  transition: all 0.5s;
   border-radius: 0.7rem;
 }
 .close {
   font-size: 3vw;
   background: transparent;
 }
-.close:hover,
+
 .editButton:hover,
 .delete:hover {
   border: 1px solid #faa4a4;
@@ -473,12 +466,13 @@ p {
   font-size: 1vw;
 }
 .left {
-  margin-top: 2vw;
+  margin-top: 1vw;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   width: 20vw;
   border-radius: 3vw;
-  margin: 3vw;
+  margin-left: 3vw;
+  margin-right: 3vw;
   transition: all 1s;
 }
 .userHeader {

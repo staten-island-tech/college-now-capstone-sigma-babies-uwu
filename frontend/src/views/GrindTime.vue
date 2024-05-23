@@ -8,16 +8,6 @@ const store = useStore()
 let notes = ref([])
 const showCompose = ref(false)
 const selectedNote = ref({})
-// async function getNote() {
-//   let res = await fetch('http://localhost:3000/note/get', {
-//     method: 'GET',
-//     headers: { 'Content-Type': 'application/json' }
-//   })
-//   let data = await res.json()
-//   notes.value = data
-//   console.log(notes.value)
-// }
-// getNote()
 function selectNote(note) {
   store.selectedNote = note
 }

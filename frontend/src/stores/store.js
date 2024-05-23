@@ -5,7 +5,6 @@ export const useStore = defineStore('store', {
   state: () => ({
     loggedUser: ref(''),
     userNotes: ref([]),
-    createView: ref(false),
     selectedNote: ref({}),
     allUsers: ref([])
   }),

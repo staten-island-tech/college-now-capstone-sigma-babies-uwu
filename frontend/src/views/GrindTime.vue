@@ -16,7 +16,7 @@ const titleEdit = ref('')
 const noteEdit = ref('')
 let shouldShowCloseButton = ref(false)
 
-async function selectNote(note) {
+function selectNote(note) {
   shouldShowCloseButton.value = true
   selectedNote.value = note
   titleEdit.value = note.title
@@ -138,7 +138,7 @@ async function create(title, note) {
   } else if (store.loggedUser === '') {
     router.push({ path: '/login' })
   } else {
-    console.log('Error', res)
+    console.log('Error', res, store.loggedUser.username)
   }
 }
 async function del() {

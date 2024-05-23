@@ -4,7 +4,7 @@ import NavBar from '../components/NavBar.vue'
 import Compose from '../components/Compose.vue'
 import { useStore } from '../stores/store'
 
-const noteStore = useStore()
+const store = useStore()
 let notes = ref([])
 const showCompose = ref(false)
 const selectedNote = ref({})
@@ -110,6 +110,12 @@ async function create(title, note) {
     border-radius: .9vw;
     font-size: .8vw;
     color: rgb(219, 138, 138);
+}
+.submitCom:hover{
+  cursor: pointer;
+}
+button:hover{
+  cursor: pointer;
 }
 .closeCom{
     position: absolute;

@@ -18,7 +18,7 @@
       <input type="newusername" placeholder="username" v-model="newusername" required />
       <input type="name" placeholder="name" v-model="name" required />
       <input type="newpassword" placeholder="password" v-model="newpassword" required />
-      <button type="submit">submit</button>
+      <button type="submit">Submit</button>
       <div v-if="failedLogin">
         <p>Username unavailable. Please submit another.</p>
       </div>
@@ -107,11 +107,6 @@ function createNew() {
   failedLogin.value = false
 }
 
-import { onMounted } from 'vue'
-onMounted(() => {
-  store.getUsers()
-})
-
 async function login(username, password) {
   console.log(username, password)
   const res = await fetch('http://localhost:3000/user/login', {
@@ -124,11 +119,11 @@ async function login(username, password) {
       password: password
     })
   })
-
-  if (res.ok) {
-    const data = await res.json()
-    store.loggedUser = data.user
+  console.log(res)
+  if (res.status != 400) {
     failedLogin.value = false
+    store.loggedUser = username
+    console.log(store.loggedUser)
     router.push({ path: '/' })
   } else {
     failedLogin.value = true
@@ -149,11 +144,11 @@ async function register(username, password, name) {
     })
   })
   console.log(res)
-  if (res.ok) {
+  if (res.status != 400) {
     failedLogin.value = false
     router.push({ path: '/' })
-    const data = await res.json()
-    store.loggedUser = data.user
+    store.loggedUser = res.body
+    console.log(store.loggedUser)
   } else {
     failedLogin.value = true
   }

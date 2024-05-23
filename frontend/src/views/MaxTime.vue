@@ -12,6 +12,7 @@ img{
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
-    margin-top: 5vw
+    margin-top: 5vw;
+    width: 30vw;
 }
 </style>

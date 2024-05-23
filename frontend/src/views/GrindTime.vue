@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
-import Compose from '../components/Compose.vue'
 import { useStore } from '../stores/store'
 import router from '../router/index'
 

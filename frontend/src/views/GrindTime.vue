@@ -3,14 +3,43 @@ import { ref, onMounted } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import Compose from '../components/Compose.vue'
 import { useStore } from '../stores/store'
+import router from '../router/index'
 
 const store = useStore()
-let notes = ref([])
+let myNotes = ref([])
+const title = ref('')
+const note = ref('')
 const showCompose = ref(false)
 const selectedNote = ref({})
 function selectNote(note) {
-  store.selectedNote = note
+  selectedNote.value = note
 }
+
+async function getNotes() {
+  const res = await fetch(`http://localhost:3000/note/get`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  if (!res.ok) {
+    console.log(res)
+  } else {
+    const data = await res.json()
+    console.log(data, store.loggedUser.username)
+    myNotes.value = data.filter((notes) => {
+      notes.user = store.loggedUser.user
+    })
+  }
+}
+onMounted(() => {
+  if (store.loggedUser === '') {
+    router.push({ path: '/login' })
+  } else {
+    getNotes()
+  }
+})
+
 async function create(title, note) {
   const date = new Date()
   let day = date.getDate()
@@ -34,15 +63,20 @@ async function create(title, note) {
     body: JSON.stringify({
       title: title,
       note: note,
-      date: dateString,
-      user: store.loggedUser
+      user: 'gh',
+      date: dateString
     })
   })
-  console.log(res, store.loggedUser)
-  if (res.status != 500) {
-    console.log(dateString)
+  if (res.ok) {
+    showCompose.value = false
+    //selectedNote.value
+    const data = await res.json()
+    selectNote(data)
+    getNotes()
+  } else if (store.loggedUser === '') {
+    router.push({ path: '/login' })
   } else {
-    console.log('wtflip')
+    console.log('Error', res)
   }
 }
 </script>
@@ -50,37 +84,44 @@ async function create(title, note) {
   <div>
     <NavBar />
     <div>
-
-    <div class="composeCom" v-if="showCompose">
-        <button class="closeCom" @click="showCompose =!showCompose" >×</button>
-        <form action="" class="formCom" @submit.prevent="create(title, body)">
-            <div>
+      <div class="composeCom" v-if="showCompose">
+        <button class="closeCom" @click="showCompose = !showCompose">×</button>
+        <form action="" class="formCom" @submit.prevent="create(title, note)">
+          <div>
             <p class="subTitleCom">Title:</p>
-            <textarea class="titleCom" maxlength="40" type="text" placeholder="TITLE"  required > </textarea>
-            </div>
-            <div>
-                <p class="subTitleCom">Note:</p>
-                <textarea class="noteCom" type="text"  v-model="note" required > </textarea>
-            </div>
-            <button class="submitCom" type="submit">SUBMIT</button>
+            <textarea
+              class="titleCom"
+              maxlength="40"
+              type="text"
+              placeholder="TITLE"
+              v-model="title"
+              required
+            >
+            </textarea>
+          </div>
+          <div>
+            <p class="subTitleCom">Note:</p>
+            <textarea class="noteCom" type="text" v-model="note" required> </textarea>
+          </div>
+          <button class="submitCom" type="submit">SUBMIT</button>
         </form>
-    </div>
+      </div>
     </div>
     <div class="con">
       <div class="leftCon">
-        <div class="left" v-for="note in notes" :key="note.id" @click="selectNote(note)">
+        <div class="left" v-for="note in myNotes" :key="note.id" @click="selectNote(note)">
           <h2>{{ note.title }}</h2>
         </div>
       </div>
       <div class="right">
         <div class="noteCon">
           <button class="close">×</button>
-          <h2 class="title">{{ store.selectedNote.title }}</h2>
-          <h3 class="subTxt" id="date">{{ store.selectedNote.date }}</h3>
-          <p class="subTxt">{{ store.selectedNote.note }}</p>
+          <h2 class="title">{{ selectedNote.title }}</h2>
+          <h3 class="subTxt" id="date">{{ selectedNote.date }}</h3>
+          <p class="subTxt">{{ selectedNote.note }}</p>
         </div>
       </div>
-      <button v-if="!showCompose" @click="showCompose =!showCompose" class="button-45">+</button>
+      <button v-if="!showCompose" @click="showCompose = !showCompose" class="button-45">+</button>
     </div>
   </div>
 </template>
@@ -89,91 +130,91 @@ async function create(title, note) {
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-.submitCom{
+.submitCom {
   margin-top: 1vw;
   background-color: rgb(255, 249, 249);
   box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
-    border: none;
-    padding: .5vw;
-    font-family: comicSans;
-    font-weight: bold;
-    border-radius: .9vw;
-    font-size: .8vw;
-    color: rgb(219, 138, 138);
+  border: none;
+  padding: 0.5vw;
+  font-family: comicSans;
+  font-weight: bold;
+  border-radius: 0.9vw;
+  font-size: 0.8vw;
+  color: rgb(219, 138, 138);
 }
-.submitCom:hover{
+.submitCom:hover {
   cursor: pointer;
 }
-button:hover{
+button:hover {
   cursor: pointer;
 }
-.closeCom{
-    position: absolute;
-    top: 1.5vw;
-    right: 2vw;
-    border: none;
-    background: transparent;
-    font-size: 2vw;
-    color: rgb(219, 138, 138);
-    -o-transition-duration: 1s;
-    transition-duration: .2s;
+.closeCom {
+  position: absolute;
+  top: 1.5vw;
+  right: 2vw;
+  border: none;
+  background: transparent;
+  font-size: 2vw;
+  color: rgb(219, 138, 138);
+  -o-transition-duration: 1s;
+  transition-duration: 0.2s;
 }
-.closeCom:hover{
-    scale: 1.2;
+.closeCom:hover {
+  scale: 1.2;
 }
-.closeCom:active{
-    transform: translateY(.3vw);
+.closeCom:active {
+  transform: translateY(0.3vw);
 }
-.subTitleCom{
-    font-size: 1vw;
-    color: rgb(219, 138, 138);
-    font-family: comicSans;
-    font-weight: bold;
-    padding: 0%;
-    
+.subTitleCom {
+  font-size: 1vw;
+  color: rgb(219, 138, 138);
+  font-family: comicSans;
+  font-weight: bold;
+  padding: 0%;
 }
-.composeCom{
-    height: 30vw;
-    width: 25vw;
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
-    position: absolute;
-    border-radius: 2vw;
-    bottom: 4vw;
-    right: 2vw;
+.composeCom {
+  height: 30vw;
+  width: 25vw;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgb(219, 138, 138) 2.4px 2.4px 3.2px;
+  position: absolute;
+  border-radius: 2vw;
+  bottom: 4vw;
+  right: 2vw;
 }
-.formCom{
-    margin-top: 3vw;
-    margin-left: 1vw;
+.formCom {
+  margin-top: 3vw;
+  margin-left: 1vw;
 }
-.noteCom{
-    border-radius: 1vw;
-    box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
-    border: none;
-    width: 85%;
-    height: 12vw;
-    font-family: comicSans;
-    color: rgb(219, 138, 138);
-    font-size: 1vw;
-    padding: 1vw;
-    background-color: rgb(255, 249, 249);
+.noteCom {
+  border-radius: 1vw;
+  box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
+  border: none;
+  width: 85%;
+  height: 12vw;
+  font-family: comicSans;
+  color: rgb(219, 138, 138);
+  font-size: 1vw;
+  padding: 1vw;
+  background-color: rgb(255, 249, 249);
 }
-textarea:focus, input:focus{
-    outline: none;
+textarea:focus,
+input:focus {
+  outline: none;
 }
-textarea{
-    resize: none;
+textarea {
+  resize: none;
 }
-.titleCom{
-    border-radius: .5vw;
-    width: 85%;
-    height: 1.5vw;
-    font-family: comicSans;
-    color: rgb(219, 138, 138);
-    font-size: 1vw;
-    box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
-    border: none;
-    background-color: rgb(255, 249, 249);
+.titleCom {
+  border-radius: 0.5vw;
+  width: 85%;
+  height: 1.5vw;
+  font-family: comicSans;
+  color: rgb(219, 138, 138);
+  font-size: 1vw;
+  box-shadow: rgb(250, 237, 244) 2.4px 2.4px 3.2px;
+  border: none;
+  background-color: rgb(255, 249, 249);
 }
 
 .button-45 {
@@ -198,7 +239,9 @@ textarea{
   text-decoration: none;
   text-shadow: none;
   text-underline-offset: 1px;
-  transition: border .2s ease-in-out,box-shadow .2s ease-in-out;
+  transition:
+    border 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -212,21 +255,20 @@ textarea{
   outline: 0;
 }
 
-
 .button-45:active {
   background-color: rgb(219, 138, 138);
   box-shadow: rgba(0, 0, 0, 0.12) 0 1px 3px 0 inset;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .button-45:hover {
-  background-color: #FFE3E3;
-  border-color: #FAA4A4;
+  background-color: #ffe3e3;
+  border-color: #faa4a4;
 }
-.composeBtn{
+.composeBtn {
   position: absolute;
   padding: 1vw;
-font-size: 2vw;
+  font-size: 2vw;
   right: 2vw;
   bottom: 2vw;
 }

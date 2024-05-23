@@ -30,7 +30,7 @@
   font-family: comicSans;
   src: url(comicsans.ttf);
 }
-input{
+input {
   display: block;
   background-color: #ffffff;
   border: none;
@@ -44,7 +44,7 @@ input{
   cursor: pointer;
   margin-bottom: 1vw;
 }
-button{
+button {
   color: lightcoral;
   background-color: #ffffff;
   font-family: comicSans;
@@ -63,28 +63,30 @@ button{
   align-items: center;
   display: inline;
   overflow-wrap: break-word;
-  border: 0 solid #E2E8F0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 0 solid #e2e8f0;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   padding: 1vw;
   text-decoration: none;
 }
-button:hover{
+button:hover {
   color: #ffffff;
   background-color: rgb(219, 138, 138);
 }
-#con{
+#con {
   position: absolute;
   left: 50%;
-    transform: translate(-50%, 0);
-    top: 35%;
+  transform: translate(-50%, 0);
+  top: 35%;
 }
-p{
+p {
   text-align: center;
   font-family: comicSans;
-    font-weight: bold;
-    color: rgb(219, 138, 138);
-    font-size: 1vw;
+  font-weight: bold;
+  color: rgb(219, 138, 138);
+  font-size: 1vw;
 }
 </style>
 
@@ -120,10 +122,12 @@ async function login(username, password) {
     })
   })
   console.log(res)
-  if (res.status != 400) {
-    failedLogin.value = false
-    store.loggedUser = username
+
+  if (res.ok) {
+    const data = await res.json()
+    store.loggedUser = data.user
     console.log(store.loggedUser)
+    failedLogin.value = false
     router.push({ path: '/' })
   } else {
     failedLogin.value = true
@@ -144,11 +148,11 @@ async function register(username, password, name) {
     })
   })
   console.log(res)
-  if (res.status != 400) {
+  if (res.ok) {
     failedLogin.value = false
     router.push({ path: '/' })
-    store.loggedUser = res.body
-    console.log(store.loggedUser)
+    const data = await res.json()
+    store.loggedUser = data.user
   } else {
     failedLogin.value = true
   }
